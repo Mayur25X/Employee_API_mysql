@@ -144,6 +144,35 @@ app.put("/employees/:id", (req, res) => {
   );
 });
 
+app.delete("/employees/:id", (req, res) => {
+  const employeeId = req.params.id;
+
+  conn.query(
+    "DELETE FROM contacts WHERE employee_id = ?",
+    [employeeId],
+    (err, result) => {
+      if (err) {
+        console.error("Error deleting contacts:", err);
+        res.status(500).send("Error deleting contacts");
+      } else {
+        conn.query(
+          "DELETE FROM employees WHERE id = ?",
+          [employeeId],
+          (err, result) => {
+            if (err) {
+              console.error("Error deleting employee:", err);
+              res.status(500).send("Error deleting employee");
+            } else {
+              res.status(200).send("Employee deleted successfully");
+            }
+          }
+        );
+      }
+    }
+  );
+});
+
+
 app.listen(3000, () => {
   console.log("App listening on port 3000!");
 });
